@@ -1,9 +1,7 @@
-// attendance_history.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AttendanceHistory } from '../entity/attendance_history.entity';
-
 
 @Injectable()
 export class AttendanceHistoryService {
@@ -18,18 +16,18 @@ export class AttendanceHistoryService {
 
   findAll(): Promise<AttendanceHistory[]> {
     return this.attendanceHistoryRepository.find({
-      relations: ['attendance', 'lecturer'], // Include relations if needed
+      relations: ['attendance'], // Include relations if needed
     });
   }
 
-  findOne(id: number): Promise<AttendanceHistory> {
+  findOne(id: number): Promise<AttendanceHistory | null> {
     return this.attendanceHistoryRepository.findOne({
       where: { id },
-      relations: ['attendance', 'lecturer'], // Include relations if needed
+      relations: ['attendance'], // Include relations if needed
     });
   }
 
-  async update(id: number, attendanceHistory: AttendanceHistory): Promise<AttendanceHistory> {
+  async update(id: number, attendanceHistory: Partial<AttendanceHistory>): Promise<AttendanceHistory | null> {
     await this.attendanceHistoryRepository.update(id, attendanceHistory);
     return this.findOne(id);
   }

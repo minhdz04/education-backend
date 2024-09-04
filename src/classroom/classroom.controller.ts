@@ -2,7 +2,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ClassroomService } from './classroom.service';
 import { Classroom } from '../entity/classroom.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('classroom')
 @Controller('classroom')
 export class ClassroomController {
   constructor(private readonly classroomService: ClassroomService) {}

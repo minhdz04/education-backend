@@ -17,18 +17,22 @@ export class ScheduleService {
   }
 
   async findAll() {
-    // return await this.scheduleRepository.createQueryBuilder("schedule")
-    // .select(['schedule.date as date','Group_CONCAT(subject.name) as subject'])
-    // .leftJoinAndSelect("schedule.subject","subject").groupBy("schedule.date").getRawMany()
     return this.scheduleRepository.find({
-      relations: ['class', 'shift', 'attendances', 'subject','classroom'],
+      relations: [
+        'class',
+        'shift',
+        'lecturer',
+        'subject',
+        'classroom',
+        'classroom.building',
+      ],
     });
   }
 
   findOne(id: number): Promise<Schedule> {
     return this.scheduleRepository.findOne({
       where: { id },
-      relations: ['class', 'shift', 'attendances', 'subject','classroom'],
+      relations: ['class', 'shift', 'lecturer', 'subject', 'classroom'],
     });
   }
 
@@ -42,10 +46,16 @@ export class ScheduleService {
   }
 
   async findByDate(date: string): Promise<Schedule[]> {
-    console.log(date);
     return this.scheduleRepository.find({
       where: { date: date },
-      relations: ['class', 'shift', 'attendances', 'subject', 'classroom'],
+      relations: [
+        'class',
+        'shift',
+        'lecturer',
+        'subject',
+        'classroom',
+        'classroom.building',
+      ],
     });
   }
 
@@ -58,7 +68,14 @@ export class ScheduleService {
       where: {
         date: Between(`${year}-${month}-01`, `${year}-${month}-31`),
       },
-      relations: ['class', 'shift', 'attendances', 'subject', 'classroom'],
+      relations: [
+        'class',
+        'shift',
+        'lecturer',
+        'subject',
+        'classroom',
+        'classroom.building',
+      ],
     });
 
     const scheduleCountByDay = schedules.reduce(

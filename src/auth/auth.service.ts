@@ -25,9 +25,6 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException('User not found');
     }
-    console.log('Password provided:', password);
-    console.log('Hashed password from DB:', user.password);
-
     if (!password || !user.password) {
       throw new BadRequestException('Invalid credentials');
     }
@@ -36,7 +33,7 @@ export class AuthService {
     if (!isPasswordCorrect) {
       throw new BadRequestException('Invalid credentials');
     }
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: user.id, username: user.username, };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

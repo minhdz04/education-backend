@@ -17,14 +17,8 @@ export class Lecturer {
   @Column()
   name: string;
 
-  @OneToMany(
-    () => AttendanceHistory,
-    (attendanceHistory) => attendanceHistory.lecturer,
-  )
-  attendanceHistories: AttendanceHistory[];
-  classes: any;
-  attendances: any;
-
   @OneToMany(() => Schedule, (schedule) => schedule.lecturer)
   schedules: Schedule[];
+
+  status: number;
 }

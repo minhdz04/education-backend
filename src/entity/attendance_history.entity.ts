@@ -10,5 +10,4 @@ export class AttendanceHistory {
 
   @ManyToOne(() => Attendance, (attendance) => attendance.attendanceHistories)
   attendance: Attendance;
-   lecturer: Lecturer;
 }

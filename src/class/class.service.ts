@@ -12,13 +12,15 @@ export class ClassService {
   ) {}
 
   findAll(): Promise<Class[]> {
-    return this.classRepository.find({ relations: ['lecturer', 'studentClasses', 'schedules'] });
+    return this.classRepository.find({
+      relations: ['classroom', 'classroom.building'],
+    });
   }
 
   findOne(id: number): Promise<Class | null> {
     return this.classRepository.findOne({
       where: { id },
-      relations: ['lecturer', 'studentClasses', 'schedules'],
+      relations: ['studentClasses', 'schedules', 'students'],
     });
   }
 
@@ -33,18 +35,5 @@ export class ClassService {
 
   async remove(id: number): Promise<void> {
     await this.classRepository.delete(id);
-  }
-  //Hàm lấy danh sách sinh viên theo id lớp học
-  async getStudentByClass(classId: number): Promise<StudentList[]> {
-    const classEntity = await this.classRepository.findOne({
-      where: { id: classId },
-      relations: ['students'], // Include students in the query
-    });
-
-    if (!classEntity) {
-      throw new Error('Class not found');
-    }
-
-    return classEntity.students;
   }
 }

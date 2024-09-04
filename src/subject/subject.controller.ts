@@ -1,7 +1,9 @@
 import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { Subject } from '../entity/subject.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+ApiTags('subjects')
 @Controller('subjects')
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}

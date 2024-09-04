@@ -1,8 +1,9 @@
 // student_list.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinTable, ManyToOne } from 'typeorm';
-import { StudentClass } from './student_class.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinTable, ManyToOne, ManyToMany } from 'typeorm';
+//import { StudentClass } from './student_class.entity';
 import { Attendance } from './attendance.entity';
 import { Class } from './class.entity';
+import { StudentClass } from './student_class.entity';
 
 @Entity()
 export class StudentList {

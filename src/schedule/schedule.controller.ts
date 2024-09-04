@@ -14,9 +14,10 @@ import {
 import { ScheduleService } from './schedule.service';
 import { ScheduleCountByDayDto } from './dto/schedule-count-by-day.dto';
 import { Public } from 'src/auth/auth.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+ApiTags('schedule')
 @Controller('schedule')
-
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 

@@ -28,7 +28,24 @@ export class StudentListService {
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.studentListRepository.delete(id);
+  async remove(studentId: string): Promise<void> {
+    const student = await this.studentListRepository.findOne({
+      where: { studentId },
+    });
+    if (student) {
+      await this.studentListRepository.delete(student.id);
+    }
+  }
+
+  // Method to find student by studentId
+  async findByStudentId(studentId: string): Promise<StudentList> {
+    return this.studentListRepository.findOne({ where: { studentId } });
+  }
+
+  async getStudentsByClassId(classId: number): Promise<StudentList[]> {
+    return this.studentListRepository.find({
+      where: { class: { id: classId } },
+      relations: ['class'], 
+    });
   }
 }

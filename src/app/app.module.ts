@@ -33,7 +33,7 @@ import { AuthModule } from 'src/auth/auth.module';
         port: 3308,
         username: 'root',
         password: '12345678',
-        database: 'attendence_system',
+        database: 'attendence_system_v2',
         entities: ['dist/**/*.entity{.ts,.js}'],
         synchronize: true,
       }),

@@ -1,30 +1,33 @@
 // attendance.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Schedule } from './schedule.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { AttendanceHistory } from './attendance_history.entity';
+import { User } from './user.entity';
 import { StudentList } from './studentlist.entity';
-import { Lecturer } from './lecturer.entity';
+import { Class } from './class.entity';
 
 @Entity()
 export class Attendance {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Schedule, (schedule) => schedule.attendances)
-  schedule: Schedule;
-
-  @ManyToOne(() => StudentList, (student) => student.attendances)
-  student: StudentList;
-
-  @Column()
+  @Column({ type: 'int' })
   status: number;
 
-  @Column({ length: 200 })
+  @Column({ length: 200,nullable :true })
   note: string;
 
   @Column({ type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToOne(() => Lecturer, (lecturer) => lecturer.attendances)
-  lecturer: Lecturer;
-   attendanceHistories: any;
+  @ManyToOne(() => User, (user) => user.attendances)
+  user: User;
+
+  @ManyToOne(() => StudentList, (studentList) => studentList.attendances,{cascade:["update"]})
+  student: StudentList;
+
+  @ManyToOne(() => Class, (classEntity) => classEntity.attendances)
+  class: Class;
+
+  @OneToMany(() => AttendanceHistory, (attendanceHistory) => attendanceHistory.attendance)
+  attendanceHistories: AttendanceHistory[];
 }

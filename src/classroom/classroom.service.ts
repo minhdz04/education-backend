@@ -11,7 +11,7 @@ export class ClassroomService {
   ) {}
 
   findAll(): Promise<Classroom[]> {
-    return this.classroomRepository.find();
+    return this.classroomRepository.find({relations:["building"]});
   }
 
   findOne(id: number): Promise<Classroom | null> {

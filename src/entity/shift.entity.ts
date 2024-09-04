@@ -22,8 +22,6 @@ export class Shift {
   @Column({ type: 'time' })
   endTime: string;
 
-  @OneToOne(() => Schedule, (schedule) => schedule.shift)
-  schedules: Schedule;
-
-  subject: any;
+  @OneToMany(() => Schedule, (schedule) => schedule.shift)
+  schedules: Schedule[];
 }

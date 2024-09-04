@@ -2,8 +2,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { BuildingService } from './building.service';
 import { Building } from '../entity/building.entity';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('buildings')
+@ApiTags('buildings')
 export class BuildingController {
   constructor(private readonly buildingService: BuildingService) {}
 

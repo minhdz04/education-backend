@@ -7,7 +7,6 @@ export class UploadController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadExcelFile(@UploadedFile() file: Express.Multer.File) {
-    
     if (!file) {
       throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
     }

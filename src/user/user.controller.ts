@@ -3,7 +3,9 @@ import { Controller, Get, Post, Body, Param, Put, Delete, NotFoundException } fr
 import { UserService } from './user.service';
 import { UpdateDto } from './dto/update.dto';
 import { CreateUserDto } from './dto/create.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user') 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -29,6 +31,12 @@ export class UserController {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
     return user;
+  }
+
+
+  @Get()
+  async findAll() {
+    return this.userService.findAll();
   }
 
   @Put(':id')

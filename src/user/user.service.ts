@@ -31,6 +31,10 @@ export class UserService {
     });
   }
 
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find();
+  }
+
   async update(id: number, updateUserDto: UpdateDto): Promise<User> {
     const user = await this.findOneById(id);
     if (!user) {

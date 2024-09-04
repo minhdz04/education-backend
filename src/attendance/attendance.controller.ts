@@ -2,33 +2,33 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { Attendance } from '../entity/attendance.entity';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('attendances')
+@ApiTags('attendances')
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
-  @Post()
-  create(@Body() attendance: Attendance) {
-    return this.attendanceService.create(attendance);
+  @Post('mark')
+  async markAttendance(
+    @Body('studentId') studentId: number,
+    @Body('classId') classId: number, 
+    @Body('userId') userId: number,
+    @Body('status') status: number,
+    @Body('note') note: string,
+  ): Promise<Attendance> {
+    return this.attendanceService.markAttendance(studentId, classId, userId, status, note);
   }
 
-  @Get()
-  findAll() {
-    return this.attendanceService.findAll();
+  @Get('class/:classId')
+  async findAttendancesByClass(@Param('classId') classId: number): Promise<Attendance[]> {
+    return this.attendanceService.findAttendancesByClass(classId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.attendanceService.findOne(+id);
+  @Get('student/:studentId')
+  async findAttendancesByStudent(@Param('studentId') studentId: number): Promise<Attendance[]> {
+    return this.attendanceService.findAttendancesByStudent(studentId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() attendance: Attendance) {
-    return this.attendanceService.update(+id, attendance);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.attendanceService.remove(+id);
-  }
+  
 }

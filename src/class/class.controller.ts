@@ -11,7 +11,9 @@ import {
 import { ClassService } from './class.service';
 import { Class } from '../entity/class.entity';
 import { StudentList } from 'src/entity/studentlist.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('classes')
 @Controller('classes')
 export class ClassController {
   constructor(private readonly classService: ClassService) {}
@@ -30,12 +32,7 @@ export class ClassController {
   findOne(@Param('id') id: string) {
     return this.classService.findOne(+id);
   }
-  ////
-  @Get(':id/students')
-  async getStudentsByClass(@Param('id') id: number): Promise<StudentList[]> {
-    // return this.classService.getStudentByClass(id);
-    return null;
-  }
+  
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() classEntity: Class) {

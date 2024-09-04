@@ -11,13 +11,13 @@ export class LecturerService {
   ) {}
 
   findAll(): Promise<Lecturer[]> {
-    return this.lecturerRepository.find({ relations: ['attendanceHistories', 'classes'] });
+    return this.lecturerRepository.find({ relations: ['schedules'] });
   }
 
   findOne(id: number): Promise<Lecturer | null> {
     return this.lecturerRepository.findOne({
       where: { id },
-      relations: ['attendanceHistories', 'classes'],
+      relations: ['schedules'],
     });
   }
 

@@ -1,83 +1,103 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { readXlsxFile } from 'read-excel-file';
-import { StudentList } from '../entity/studentlist.entity';
-import { Schedule } from '../entity/schedule.entity';
 import { Class } from '../entity/class.entity';
-import { Shift } from '../entity/shift.entity';
-import { Subject } from '../entity/Subject.entity';
-import { Lecturer } from '../entity/lecturer.entity';
 import { Classroom } from '../entity/classroom.entity';
+import { Schedule } from '../entity/schedule.entity';
+import { Shift } from '../entity/shift.entity';
+import { StudentList } from '../entity/studentlist.entity';
 
 @Injectable()
 export class UploadService {
   constructor(
-    @InjectRepository(StudentList)
-    private readonly studentRepository: Repository<StudentList>,
-    @InjectRepository(Schedule)
-    private readonly scheduleRepository: Repository<Schedule>,
     @InjectRepository(Class)
     private readonly classRepository: Repository<Class>,
+    @InjectRepository(StudentList)
+    private readonly studentListRepository: Repository<StudentList>,
+    @InjectRepository(Schedule)
+    private readonly scheduleRepository: Repository<Schedule>,
     @InjectRepository(Shift)
     private readonly shiftRepository: Repository<Shift>,
-    @InjectRepository(Subject)
-    private readonly subjectRepository: Repository<Subject>,
-    @InjectRepository(Lecturer)
-    private readonly lecturerRepository: Repository<Lecturer>,
     @InjectRepository(Classroom)
     private readonly classroomRepository: Repository<Classroom>,
   ) {}
 
-  async processExcelFile(fileBuffer: Buffer, fileType: 'student' | 'schedule') {
-    try {
-      const rows = await readXlsxFile(fileBuffer);
+  async importData(data: any) {
+    // Lấy thông tin lớp học
+    const className = data['Column6'][1];
+    const classroomName = 'Classroom Name'; // Placeholder, cần lấy từ dữ liệu hoặc định nghĩa sẵn
+    const shiftName = data['Column8'][1];
+    const shiftStartTime = '08:00:00'; // Placeholder, cần lấy từ dữ liệu hoặc định nghĩa sẵn
+    const shiftEndTime = '17:00:00'; // Placeholder, cần lấy từ dữ liệu hoặc định nghĩa sẵn
 
-      if (fileType === 'student') {
-        return this.processStudentData(rows);
-      } else if (fileType === 'schedule') {
-        return this.processScheduleData(rows);
-      } else {
-        throw new Error('Invalid file type');
+    // Tạo hoặc tìm lớp học
+    let classEntity = await this.classRepository.findOne({ where: { name: className } });
+    if (!classEntity) {
+      classEntity = this.classRepository.create({ name: className });
+      await this.classRepository.save(classEntity);
+    }
+
+    // Tạo hoặc tìm classroom
+    let classroomEntity = await this.classroomRepository.findOne({ where: { name: classroomName } });
+    if (!classroomEntity) {
+      classroomEntity = this.classroomRepository.create({ name: classroomName });
+      await this.classroomRepository.save(classroomEntity);
+    }
+
+    // Tạo hoặc tìm shift
+    let shiftEntity = await this.shiftRepository.findOne({ where: { name: shiftName } });
+    if (!shiftEntity) {
+      shiftEntity = this.shiftRepository.create({
+        name: shiftName,
+        startTime: shiftStartTime,
+        endTime: shiftEndTime,
+      });
+      await this.shiftRepository.save(shiftEntity);
+    }
+
+    // Lặp qua dữ liệu sinh viên để tạo hoặc cập nhật sinh viên
+    for (let i = 1; i < data['Column1'].length; i++) {
+      const studentId = data['Column2'][i];
+      const studentName = data['Column3'][i];
+      const birthDateString = data['Column4'][i];
+
+      // Kiểm tra ngày tháng hợp lệ
+      const birthDate = new Date(birthDateString);
+      if (isNaN(birthDate.getTime())) {
+        console.error(`Invalid date format for student ${studentName} with date ${birthDateString}`);
+        continue; // Bỏ qua sinh viên này nếu ngày không hợp lệ
       }
-    } catch (error) {
-      console.error(error);
-      throw new Error('Error processing the file');
+
+      let studentEntity = await this.studentListRepository.findOne({ where: { studentId } });
+      if (!studentEntity) {
+        studentEntity = this.studentListRepository.create({
+          studentId,
+          name: studentName,
+          birthDate: birthDate,
+          class: classEntity,
+        });
+        await this.studentListRepository.save(studentEntity);
+      }
     }
-  }
 
-  private async processStudentData(rows: any[]) {
-    const dataRows = rows.slice(1); // Bỏ qua dòng đầu tiên nếu nó là tiêu đề
-    for (const row of dataRows) {
-      const student = new StudentList();
-      student.studentId = row[0]; // Cột đầu tiên là studentId
-      student.name = row[1]; // Cột thứ hai là name
-      student.birthDate = new Date(row[2]); // Cột thứ ba là birthDate
+    // Tạo lịch trình
+    for (let i = 1; i < data['Column9'].length; i++) {
+      const scheduleDateString = data['Column9'][i];
+      const scheduleDate = new Date(scheduleDateString).toISOString().split('T')[0];
 
-      const classEntity = await this.classRepository.findOne({ where: { id: row[3] } }); // Cột thứ tư là classId
-      student.class = classEntity;
+      if (isNaN(new Date(scheduleDateString).getTime())) {
+        console.error(`Invalid date format for schedule date ${scheduleDateString}`);
+        continue; // Bỏ qua lịch trình này nếu ngày không hợp lệ
+      }
 
-      await this.studentRepository.save(student);
+      const scheduleEntity = this.scheduleRepository.create({
+        date: scheduleDate,
+        shift: shiftEntity,
+        class: classEntity,
+        classroom: classroomEntity,
+        // subject, lecturer và các trường khác cần định nghĩa hoặc lấy từ dữ liệu
+      });
+      await this.scheduleRepository.save(scheduleEntity);
     }
-    console.log('Student data saved successfully');
-    return dataRows;
-  }
-
-  private async processScheduleData(rows: any[]) {
-    const dataRows = rows.slice(1); // Bỏ qua dòng đầu tiên nếu nó là tiêu đề
-    for (const row of dataRows) {
-      const schedule = new Schedule();
-      schedule.date = row[0]; // Cột đầu tiên là date
-
-      schedule.shift = await this.shiftRepository.findOne({ where: { id: row[1] } }); // Cột thứ hai là shiftId
-      schedule.class = await this.classRepository.findOne({ where: { id: row[2] } }); // Cột thứ ba là classId
-      schedule.subject = await this.subjectRepository.findOne({ where: { id: row[3] } }); // Cột thứ tư là subjectId
-      schedule.lecturer = await this.lecturerRepository.findOne({ where: { id: row[4] } }); // Cột thứ năm là lecturerId
-      schedule.classroom = await this.classroomRepository.findOne({ where: { id: row[5] } }); // Cột thứ sáu là classroomId
-
-      await this.scheduleRepository.save(schedule);
-    }
-    console.log('Schedule data saved successfully');
-    return dataRows;
   }
 }

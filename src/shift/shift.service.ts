@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Shift } from '../entity/Shift.entity';
+import { Shift } from '../entity/shift.entity';
 
 @Injectable()
 export class ShiftService {

@@ -6,7 +6,7 @@ import { StudentList } from '../entity/studentlist.entity';
 import { Schedule } from '../entity/schedule.entity';
 import { Class } from '../entity/class.entity';
 import { Shift } from '../entity/shift.entity';
-import { Subject } from '../entity/Subject.entity';
+import { Subject } from '../entity/subject.entity';
 import { Lecturer } from '../entity/lecturer.entity';
 import { Classroom } from '../entity/classroom.entity';
 

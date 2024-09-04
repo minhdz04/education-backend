@@ -1,7 +1,7 @@
 // shift.controller.ts
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ShiftService } from './shift.service';
-import { Shift } from '../entity/Shift.entity';
+import { Shift } from '../entity/shift.entity';
 import { ApiTags } from '@nestjs/swagger';
 
 ApiTags('shift')

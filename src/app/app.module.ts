@@ -30,7 +30,7 @@ import { AuthModule } from 'src/auth/auth.module';
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
         host: '127.0.0.1',
-        port: 3308,
+        port: 3306,
         username: 'root',
         password: '12345678',
         database: 'attendence_system_v2',

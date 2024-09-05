@@ -1,4 +1,3 @@
-// attendance.controller.ts
 import {
   Controller,
   Get,
@@ -13,6 +12,7 @@ import { Attendance } from '../entity/attendance.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 
+
 @Controller('attendances')
 @ApiTags('attendances')
 export class AttendanceController {
@@ -20,15 +20,14 @@ export class AttendanceController {
 
   @Post('mark')
   async markAttendance(
-    @Body('studentId') studentId: number,
-    @Body('classId') classId: number,
-    @Body('userId') userId: number,
-    @Body('status') status: number,
-    @Body('note') note: string,
+    @Body() markAttendanceDto: CreateAttendanceDto, // Sử dụng DTO mới
   ): Promise<Attendance> {
     console.log('Running ....');
+    const { studentId, classId, userId, status, note, scheduleId } =
+      markAttendanceDto;
     return this.attendanceService.markAttendance(
       studentId,
+      scheduleId,
       classId,
       userId,
       status,
@@ -51,7 +50,9 @@ export class AttendanceController {
   }
 
   @Get('schedule/:scheduleId')
-  async findByScheduleId(@Param('scheduleId') scheduleId: number) {
+  async findByScheduleId(
+    @Param('scheduleId') scheduleId: number,
+  ): Promise<Attendance[]> {
     return this.attendanceService.findByScheduleId(scheduleId);
   }
 

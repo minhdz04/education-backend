@@ -95,4 +95,31 @@ export class ScheduleService {
       count: count,
     })) as ScheduleCountByDayDto[];
   }
+  async findByClassId(classId: number): Promise<Schedule[]> {
+    return this.scheduleRepository.find({
+      where: { class: { id: classId } },
+      relations: [
+        'class',
+        'shift',
+        'lecturer',
+        'subject',
+        'classroom',
+        'classroom.building',
+      ],
+    });
+  }
+
+  async findByLecturerId(lecturerId: number): Promise<Schedule[]> {
+    return this.scheduleRepository.find({
+      where: { lecturer: { id: lecturerId } },
+      relations: [
+        'class',
+        'shift',
+        'lecturer',
+        'subject',
+        'classroom',
+        'classroom.building',
+      ],
+    });
+  }
 }

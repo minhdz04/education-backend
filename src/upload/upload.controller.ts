@@ -34,7 +34,7 @@ export class UploadController {
       // Chuyển đổi sheet thành JSON với tùy chọn { header: 1 }
       // Điều này sẽ trả về dữ liệu theo dạng mảng hai chiều
       const data: any[] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
+      // console.log(data);
       // Chuyển đổi dữ liệu từ mảng hai chiều thành định dạng cột
       const columns = this.convertRowsToColumns(data);
       this.uploadService.importData(columns);

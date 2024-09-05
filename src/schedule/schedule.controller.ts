@@ -16,7 +16,7 @@ import { ScheduleCountByDayDto } from './dto/schedule-count-by-day.dto';
 import { Public } from 'src/auth/auth.decorator';
 import { ApiTags } from '@nestjs/swagger';
 
-ApiTags('schedule')
+ApiTags('schedule');
 @Controller('schedule')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
@@ -57,5 +57,15 @@ export class ScheduleController {
     @Param('date') date: string,
   ): Promise<ScheduleCountByDayDto[]> {
     return this.scheduleService.getScheduleCountByDayInMonth(date);
+  }
+
+  @Get('by-class/:classId')
+  async getByClassId(@Param('classId') classId: string): Promise<Schedule[]> {
+    return this.scheduleService.findByClassId(+classId);
+  }
+
+  @Get('by-lecturer/:lecturerId')
+  async getByLecturerId(@Param('lecturerId') lecturerId: string): Promise<Schedule[]> {
+    return this.scheduleService.findByLecturerId(+lecturerId);
   }
 }

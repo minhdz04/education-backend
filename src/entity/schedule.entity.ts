@@ -1,15 +1,10 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Class } from './class.entity';
 import { Shift } from './shift.entity';
 import { Subject } from './subject.entity';
 import { Lecturer } from './lecturer.entity';
 import { Classroom } from './classroom.entity';
-
+import { Attendance } from './attendance.entity';
 
 @Entity()
 export class Schedule {
@@ -33,4 +28,7 @@ export class Schedule {
 
   @ManyToOne(() => Classroom, (classroom) => classroom.schedules)
   classroom: Classroom;
+
+  @OneToMany(() => Attendance, (attendance) => attendance.schedule)
+  attendances: Attendance[];
 }

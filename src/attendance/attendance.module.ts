@@ -1,13 +1,19 @@
+// attendance.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Attendance } from '../entity/attendance.entity';
 import { AttendanceService } from './attendance.service';
 import { AttendanceController } from './attendance.controller';
+import { Attendance } from '../entity/attendance.entity';
+import { StudentList } from 'src/entity/studentlist.entity';
+import { Class } from 'src/entity/class.entity';
+import { User } from 'src/entity/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Attendance])],
+  imports: [
+    TypeOrmModule.forFeature([Attendance, StudentList, Class, User]),
+  ],
   providers: [AttendanceService],
   controllers: [AttendanceController],
-  exports: [AttendanceService],  // Exports service if other modules need to use it
+  exports: [AttendanceService],
 })
 export class AttendanceModule {}

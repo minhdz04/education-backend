@@ -1,8 +1,11 @@
 // create-attendance.dto.ts
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateAttendanceDto {
-  status: number;
-  note: string;
-  updatedAt: Date;
+  studentId: number;
+  classId: number;
   userId: number;
+  scheduleId: number;
+  note?: string;
+  status: number;
 }

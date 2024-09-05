@@ -6,6 +6,7 @@ import { Classroom } from '../entity/classroom.entity';
 import { Schedule } from '../entity/schedule.entity';
 import { Shift } from '../entity/shift.entity';
 import { StudentList } from '../entity/studentlist.entity';
+import moment from 'moment';
 
 @Injectable()
 export class UploadService {
@@ -36,21 +37,29 @@ export class UploadService {
     const shiftEndTime = '17:00:00'; // Placeholder, cần lấy từ dữ liệu hoặc định nghĩa sẵn
 
     // Tạo hoặc tìm lớp học
-    let classEntity = await this.classRepository.findOne({ where: { name: className } });
+    let classEntity = await this.classRepository.findOne({
+      where: { name: className },
+    });
     if (!classEntity) {
       classEntity = this.classRepository.create({ name: className });
       await this.classRepository.save(classEntity);
     }
 
     // Tạo hoặc tìm classroom
-    let classroomEntity = await this.classroomRepository.findOne({ where: { name: classroomName } });
+    let classroomEntity = await this.classroomRepository.findOne({
+      where: { name: classroomName },
+    });
     if (!classroomEntity) {
-      classroomEntity = this.classroomRepository.create({ name: classroomName });
+      classroomEntity = this.classroomRepository.create({
+        name: classroomName,
+      });
       await this.classroomRepository.save(classroomEntity);
     }
 
     // Tạo hoặc tìm shift
-    let shiftEntity = await this.shiftRepository.findOne({ where: { name: shiftName } });
+    let shiftEntity = await this.shiftRepository.findOne({
+      where: { name: shiftName },
+    });
     if (!shiftEntity) {
       shiftEntity = this.shiftRepository.create({
         name: shiftName,
@@ -67,7 +76,9 @@ export class UploadService {
       const birthDateString = data['Column4'][i];
       const birthDate = this.parseDate(birthDateString);
 
-      let studentEntity = await this.studentListRepository.findOne({ where: { studentId } });
+      let studentEntity = await this.studentListRepository.findOne({
+        where: { studentId },
+      });
       if (!studentEntity) {
         studentEntity = this.studentListRepository.create({
           studentId,
@@ -82,19 +93,15 @@ export class UploadService {
     // Tạo lịch trình
     for (let i = 1; i < data['Column9'].length; i++) {
       const scheduleDateString = data['Column9'][i];
-      const scheduleDate = new Date(scheduleDateString).toISOString().split('T')[0];
-
-      if (isNaN(new Date(scheduleDateString).getTime())) {
-        console.error(`Invalid date format for schedule date ${scheduleDateString}`);
-        continue; // Bỏ qua lịch trình này nếu ngày không hợp lệ
-      }
+      const date = moment('1899-12-30')
+        .add(scheduleDateString, 'days')
+        .format('YYYY/MM/DD');
 
       const scheduleEntity = this.scheduleRepository.create({
-        date: scheduleDate,
+        date: date + '',
         shift: shiftEntity,
         class: classEntity,
         classroom: classroomEntity,
-        // subject, lecturer và các trường khác cần định nghĩa hoặc lấy từ dữ liệu
       });
       await this.scheduleRepository.save(scheduleEntity);
     }

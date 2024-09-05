@@ -14,16 +14,16 @@ import { UploadService } from './upload.service';
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
-  
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadExcelFile(@UploadedFile() file: Express.Multer.File) {
+    console.log('Uploading ....');
+    console.log(file.fieldname);
     if (!file) {
       throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
     }
 
     try {
-      console.log(file);
       // Đọc dữ liệu từ buffer của tệp
       const workbook = XLSX.read(file.buffer, { type: 'buffer' });
 
@@ -37,8 +37,6 @@ export class UploadController {
 
       // Chuyển đổi dữ liệu từ mảng hai chiều thành định dạng cột
       const columns = this.convertRowsToColumns(data);
-
-      console.log(columns);
       this.uploadService.importData(columns);
       return columns;
     } catch (error) {

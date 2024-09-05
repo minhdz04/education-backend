@@ -22,6 +22,11 @@ export class UploadService {
     private readonly classroomRepository: Repository<Classroom>,
   ) {}
 
+  private parseDate(dateString: string): string {
+    const [day, month, year] = dateString.split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+
   async importData(data: any) {
     // Lấy thông tin lớp học
     const className = data['Column6'][1];
@@ -60,20 +65,14 @@ export class UploadService {
       const studentId = data['Column2'][i];
       const studentName = data['Column3'][i];
       const birthDateString = data['Column4'][i];
-
-      // Kiểm tra ngày tháng hợp lệ
-      const birthDate = new Date(birthDateString);
-      if (isNaN(birthDate.getTime())) {
-        console.error(`Invalid date format for student ${studentName} with date ${birthDateString}`);
-        continue; // Bỏ qua sinh viên này nếu ngày không hợp lệ
-      }
+      const birthDate = this.parseDate(birthDateString);
 
       let studentEntity = await this.studentListRepository.findOne({ where: { studentId } });
       if (!studentEntity) {
         studentEntity = this.studentListRepository.create({
           studentId,
           name: studentName,
-          birthDate: birthDate,
+          birthDate,
           class: classEntity,
         });
         await this.studentListRepository.save(studentEntity);

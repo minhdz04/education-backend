@@ -17,7 +17,7 @@ export class StudentList {
   name: string;
 
   @Column({ type: 'date' })
-  birthDate: Date;
+  birthDate: string;
 
   @OneToMany(() => StudentClass, (studentClass) => studentClass.student)
   studentClasses: StudentClass[];

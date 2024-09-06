@@ -11,12 +11,12 @@ import { IS_PUBLIC_KEY } from './auth.decorator';
 import { jwtConstants } from './constants';
 
 @Injectable()
-export class AuthGuard implements CanActivate { 
+export class AuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
   ) {}
-  
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
@@ -35,7 +35,7 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
       });
-      request['user'] = payload;
+      request['user'] = payload; // Gán payload JWT vào request
     } catch {
       throw new UnauthorizedException();
     }

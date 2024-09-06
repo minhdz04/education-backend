@@ -26,7 +26,7 @@ export class AttendanceService {
   async create(createAttendanceDto: CreateAttendanceDto): Promise<Attendance> {
     let attendance = await this.attendanceRepository.findOne({
       where: {
-        student: { id: createAttendanceDto.studentId },
+        student: { studentId: createAttendanceDto.studentId },
         class: { id: createAttendanceDto.classId },
         schedule: { id: createAttendanceDto.scheduleId },
       },
@@ -44,7 +44,7 @@ export class AttendanceService {
     }
   }
   async markAttendance(
-    studentId: number,
+    studentId: string,
     scheduleId: number,
     classId: number,
     userId: number,
@@ -52,9 +52,10 @@ export class AttendanceService {
     note: string,
   ): Promise<Attendance> {
     try {
+      console.log(classId, studentId, userId);
       // Tìm sinh viên
       const student = await this.studentRepository.findOne({
-        where: { id: studentId },
+        where: { studentId: studentId },
       });
 
       // Tìm lịch học
@@ -80,7 +81,7 @@ export class AttendanceService {
       // Tìm điểm danh theo các tiêu chí
       let attendance = await this.attendanceRepository.findOne({
         where: {
-          student: { id: studentId },
+          student: { studentId: studentId },
           schedule: { id: scheduleId },
           class: { id: classId },
           user: { id: userId },

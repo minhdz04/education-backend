@@ -1,18 +1,42 @@
 // user.controller.ts
-import { Controller, Get, Post, Body, Param, Put, Delete, NotFoundException } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UpdateDto } from './dto/update.dto';
-import { CreateUserDto } from './dto/create.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Role } from 'src/auth/role.enum';
+import { Roles } from 'src/auth/roles.decorator';
+import { CreateUserDto } from './dto/create.dto';
+import { UpdateDto } from './dto/update.dto';
+import { UserService } from './user.service';
 
-@ApiTags('user') 
+@ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto.username, createUserDto.password);
+  @Roles(Role.Admin)
+  @Post('createTeacher')
+  async createTeacher(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(
+      createUserDto.username,
+      createUserDto.password,
+      Role.Teacher,
+    );
+  }
+  @Roles(Role.Admin)
+  @Post('createAdmin')
+  async createAdmin(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(
+      createUserDto.username,
+      createUserDto.password,
+      Role.Admin,
+    );
   }
 
   @Get(':username')
@@ -32,7 +56,6 @@ export class UserController {
     }
     return user;
   }
-
 
   @Get()
   async findAll() {

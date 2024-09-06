@@ -68,4 +68,9 @@ export class ScheduleController {
   async getByLecturerId(@Param('lecturerId') lecturerId: string): Promise<Schedule[]> {
     return this.scheduleService.findByLecturerId(+lecturerId);
   }
+
+  @Get(':scheduleId/students')
+  async getStudentsBySchedule(@Param('scheduleId') scheduleId: number) {
+    return this.scheduleService.getStudentsBySchedule(scheduleId);
+  }
 }

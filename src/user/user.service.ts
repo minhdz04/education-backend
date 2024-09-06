@@ -3,6 +3,7 @@ import { User } from '../entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateDto } from './dto/update.dto'; // Đảm bảo bạn có DTO này cho update
+import { Role } from 'src/auth/role.enum'; // Import enum Role
 
 @Injectable()
 export class UserService {
@@ -10,8 +11,8 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(username: string, password: string): Promise<User> {
-    const newUser = this.userRepository.create({ username, password });
+  async create(username: string, password: string, role: Role): Promise<User> {
+    const newUser = this.userRepository.create({ username, password, role });
     return this.userRepository.save(newUser);
   }
 

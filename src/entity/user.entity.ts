@@ -1,6 +1,6 @@
-// user.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Attendance } from './attendance.entity';
+import { Role } from 'src/auth/role.enum';
 
 @Entity()
 export class User {
@@ -18,6 +18,13 @@ export class User {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.Teacher, // Giá trị mặc định là Teacher
+  })
+  role: Role;
 
   @OneToMany(() => Attendance, (attendance) => attendance.user)
   attendances: Attendance[];

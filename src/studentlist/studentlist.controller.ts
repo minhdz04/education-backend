@@ -1,4 +1,3 @@
-// student_list.controller.ts
 import {
   Controller,
   Get,
@@ -12,8 +11,10 @@ import { StudentListService } from './studentlist.service';
 import { StudentList } from '../entity/studentlist.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/auth.decorator';
+import { StudentAttendanceDto } from './dto/student-attendance.dto';
+ // Import DTO nếu chưa có
 
-ApiTags('student-list');
+@ApiTags('student-list')
 @Controller('student-list')
 export class StudentListController {
   constructor(private readonly studentListService: StudentListService) {}
@@ -34,11 +35,10 @@ export class StudentListController {
   }
 
   @Public()
-   //// Get student
-   @Get(':id/students')
-   getStudents(@Param('id') id: number) {
-     return this.studentListService.getStudentsByClassId(id);
-   }
+  @Get(':id/students')
+  getStudents(@Param('id') id: number) {
+    return this.studentListService.getStudentsByClassId(id);
+  }
 
   @Public()
   @Get('class/:classId')
@@ -55,5 +55,11 @@ export class StudentListController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentListService.remove(id);
+  }
+
+  @Public()
+  @Get('attendance/class/:classId')
+  async compareStudentListWithAttendance(@Param('classId') classId: number): Promise<StudentAttendanceDto[]> {
+    return this.studentListService.compareStudentListWithAttendance(classId);
   }
 }

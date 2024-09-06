@@ -1,15 +1,23 @@
 // schedule.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Attendance } from 'src/entity/attendance.entity';
+import { StudentList } from 'src/entity/studentlist.entity';
 import { Between, Repository } from 'typeorm';
 import { Schedule } from '../entity/schedule.entity';
 import { ScheduleCountByDayDto } from './dto/schedule-count-by-day.dto';
+import { ScheduleStudentDto } from './dto/schedule-student.dto';
 
 @Injectable()
 export class ScheduleService {
   constructor(
     @InjectRepository(Schedule)
     private scheduleRepository: Repository<Schedule>,
+    @InjectRepository(StudentList)
+    private readonly studentListRepository: Repository<StudentList>,
+
+    @InjectRepository(Attendance)
+    private readonly attendanceRepository: Repository<Attendance>,
   ) {}
 
   create(schedule: Schedule): Promise<Schedule> {
@@ -120,6 +128,49 @@ export class ScheduleService {
         'classroom',
         'classroom.building',
       ],
+    });
+  }
+
+  async getStudentsBySchedule(
+    scheduleId: number,
+  ): Promise<ScheduleStudentDto[]> {
+    // Lấy lịch học
+    const schedule = await this.scheduleRepository.findOne({
+      where: { id: scheduleId },
+      relations: ['class'],
+    });
+
+    if (!schedule) {
+      throw new Error('Schedule not found');
+    }
+
+    // Lấy danh sách học sinh của lớp trong lịch học
+    const students = await this.studentListRepository.find({
+      where: { class: { id: schedule.class.id } },
+    });
+
+    // Lấy danh sách điểm danh của lớp trong lịch học
+    const attendances = await this.attendanceRepository.find({
+      where: { schedule: { id: scheduleId } },
+      relations: ['student'],
+    });
+    console.log(attendances);
+    // Sử dụng Map để dễ dàng tra cứu trạng thái điểm danh
+    // Giả sử studentId là chuỗi trong StudentList
+    const attendanceMap = new Map<string, boolean>();
+    attendances.forEach((attendance) => {
+      attendanceMap.set(attendance.student.studentId, true);
+    });
+    console.log(attendanceMap);
+    // So sánh và tạo danh sách DTO để trả về
+    return students.map((student) => {
+      const isChecked = attendanceMap.has(student.studentId);
+      return {
+        id: student.id,
+        studentId: student.studentId,
+        studentName: student.name,
+        isChecked,
+      };
     });
   }
 }

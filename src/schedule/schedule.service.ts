@@ -62,7 +62,7 @@ export class ScheduleService {
         'lecturer',
         'subject',
         'classroom',
-        'classroom.building',
+        'classroom.building',   
       ],
     });
   }
@@ -173,4 +173,6 @@ export class ScheduleService {
       };
     });
   }
+
+  
 }

@@ -6,15 +6,18 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { Attendance } from '../entity/attendance.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 
 @Controller('attendances')
 @ApiTags('attendances')
+@UseGuards(RolesGuard)
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 

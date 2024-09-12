@@ -11,7 +11,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(username: string, password: string, role: Role) {
+  async register(username: string, password: string, email:string ,role: Role) {
     const user = await this.userService.findOne(username);
     if (user) {
       throw new BadRequestException('User already exists');
@@ -20,7 +20,7 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Truyền thêm role khi tạo user
-    return this.userService.create(username, hashedPassword, role);
+    return this.userService.create(username, hashedPassword,email, role);
   }
 
   async login(username: string, password: string) {

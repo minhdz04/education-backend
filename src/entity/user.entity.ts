@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne } from 'typeorm';
 import { Attendance } from './attendance.entity';
 import { Role } from 'src/auth/role.enum';
+import { Lecturer } from './lecturer.entity';
 
 @Entity()
 export class User {
@@ -14,7 +15,7 @@ export class User {
   password: string;
 
   @Column({ length: 100, nullable: true })
-  email?: string;
+  email: string;
 
   @Column({ default: true })
   isActive: boolean;
@@ -28,4 +29,7 @@ export class User {
 
   @OneToMany(() => Attendance, (attendance) => attendance.user)
   attendances: Attendance[];
+
+  @OneToOne(() => Lecturer, (lecturer) => lecturer.user)
+  lecturer: Lecturer; 
 }

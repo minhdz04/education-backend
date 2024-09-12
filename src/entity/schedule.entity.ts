@@ -5,6 +5,7 @@ import { Subject } from './subject.entity';
 import { Lecturer } from './lecturer.entity';
 import { Classroom } from './classroom.entity';
 import { Attendance } from './attendance.entity';
+import { Building } from './building.entity';
 
 @Entity()
 export class Schedule {
@@ -17,7 +18,7 @@ export class Schedule {
   @ManyToOne(() => Shift, (shift) => shift.schedules)
   shift: Shift;
 
-  @ManyToOne(() => Class, (classEntity) => classEntity.schedules)
+  @ManyToOne(() => Class, (classEntity) => classEntity.schedules, { eager: true })
   class: Class;
 
   @ManyToOne(() => Subject, (subject) => subject.schedules)
@@ -28,7 +29,7 @@ export class Schedule {
 
   @ManyToOne(() => Classroom, (classroom) => classroom.schedules)
   classroom: Classroom;
-
+  
   @OneToMany(() => Attendance, (attendance) => attendance.schedule)
   attendances: Attendance[];
 }

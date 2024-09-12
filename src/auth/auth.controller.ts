@@ -18,14 +18,15 @@ export class AuthController {
     return this.authService.register(
       registerDto.username,
       registerDto.password,
-      Role.Teacher,
+      registerDto.email,
+      Role.Admin,
     );
   }
 
   @Post('login')
   @Public()
   login(@Body() loginDto: LoginDto) {
-    console.log('Login ...');
+    console.log("Login ...")
     return this.authService.login(loginDto.username, loginDto.password);
   }
 }

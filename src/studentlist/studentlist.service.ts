@@ -82,4 +82,12 @@ export class StudentListService {
       };
     });
   }
+
+  // Hàm lấy số lượng học sinh trong một lớp cụ thể
+  async getTotalStudentsByClassId(classId: number): Promise<number> {
+    const total = await this.studentListRepository.count({
+      where: { class: { id: classId } },
+    });
+    return total;
+  }
 }

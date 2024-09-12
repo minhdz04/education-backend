@@ -4,17 +4,23 @@ import {
   HttpStatus,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as XLSX from 'xlsx';
 import { UploadService } from './upload.service';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from 'src/auth/role.enum';
 
 @Controller('excel')
+@UseGuards(RolesGuard)
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
   @Post('upload')
+  @Roles(Role.Admin)
   @UseInterceptors(FileInterceptor('file'))
   async uploadExcelFile(@UploadedFile() file: Express.Multer.File) {
     console.log('Uploading ....');

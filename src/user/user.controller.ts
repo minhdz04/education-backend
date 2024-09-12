@@ -7,7 +7,8 @@ import {
   NotFoundException,
   Param,
   Post,
-  Put
+  Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Role } from 'src/auth/role.enum';
@@ -15,28 +16,37 @@ import { Roles } from 'src/auth/roles.decorator';
 import { CreateUserDto } from './dto/create.dto';
 import { UpdateDto } from './dto/update.dto';
 import { UserService } from './user.service';
-
+import { RolesGuard } from 'src/auth/roles.guard';
+import * as bcrypt from 'bcrypt';
 @ApiTags('user')
 @Controller('user')
+@UseGuards(RolesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   @Post('createTeacher')
   async createTeacher(@Body() createUserDto: CreateUserDto) {
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
     return this.userService.create(
       createUserDto.username,
-      createUserDto.password,
-      Role.Teacher,
+      hashedPassword,
+      createUserDto.email, 
+      Role.Teacher, // Đảm bảo rằng Role.Teacher là giá trị hợp lệ
     );
   }
-  @Roles(Role.Admin)
+
   @Post('createAdmin')
   async createAdmin(@Body() createUserDto: CreateUserDto) {
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
     return this.userService.create(
       createUserDto.username,
-      createUserDto.password,
-      Role.Admin,
+      hashedPassword,
+      createUserDto.email,
+      Role.Admin, // Đảm bảo rằng Role.Admin là giá trị hợp lệ
     );
+
   }
 
   @Get(':username')

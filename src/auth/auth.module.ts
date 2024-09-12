@@ -7,6 +7,9 @@ import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { AuthController } from './auth.controller';
 import { RolesGuard } from './roles.guard';
+import { User } from 'src/entity/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Lecturer } from 'src/entity/lecturer.entity';
 
 @Module({
   imports: [
@@ -16,6 +19,7 @@ import { RolesGuard } from './roles.guard';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '365d' },
     }),
+    TypeOrmModule.forFeature([Lecturer, User]),
   ],
   controllers: [AuthController],
   providers: [

@@ -32,7 +32,7 @@ import { AuthModule } from 'src/auth/auth.module';
         password: 'PASSWORD',
         database: 'attendence_system_v2',
         entities: ['dist/**/*.entity{.ts,.js}'],
-        synchronize: true,
+        //synchronize: true,
       }),
     }),
     //Thêm các module khác

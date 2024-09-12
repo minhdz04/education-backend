@@ -69,12 +69,19 @@ export class ScheduleService {
 
   async getScheduleCountByDayInMonth(
     date: string,
+    lecturerId: string
   ): Promise<ScheduleCountByDayDto[]> {
     const [year, month] = date.split('-').map(Number);
-
+    const currentMonth = String(month)?.padStart(2, '0')
+    const startDate = `${year}-${currentMonth}-01`
+    const getFullYear = new Date(startDate).getFullYear()
+    const getMonth = new Date(startDate).getMonth()
+    const lastDayInCurrentMonth = new Date(getFullYear, getMonth + 1, 0).getDate()
+    const endDate = `${year}-${currentMonth}-${lastDayInCurrentMonth}`
     const schedules = await this.scheduleRepository.find({
       where: {
-        date: Between(`${year}-${month}-01`, `${year}-${month}-31`),
+        date: Between(startDate, endDate),
+        lecturer:{id: +lecturerId}
       },
       relations: [
         'class',
@@ -119,7 +126,7 @@ export class ScheduleService {
 
   async findByLecturerId(lecturerId: number): Promise<Schedule[]> {
     return this.scheduleRepository.find({
-      where: { lecturer: { id: lecturerId } },
+      where: { lecturer:{ id: lecturerId}  },
       relations: [
         'class',
         'shift',

@@ -16,9 +16,6 @@ import { UploadModule } from 'src/upload/upload.module';
 import { SubjectModule } from 'src/subject/subject.module';
 import { AuthModule } from 'src/auth/auth.module';
 
-
-
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,7 +32,7 @@ import { AuthModule } from 'src/auth/auth.module';
         password: 'PASSWORD',
         database: 'attendence_system_v2',
         entities: ['dist/**/*.entity{.ts,.js}'],
-        //synchronize: true,
+        synchronize: true,
       }),
     }),
     //Thêm các module khác

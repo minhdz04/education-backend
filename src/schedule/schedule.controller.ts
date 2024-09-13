@@ -65,6 +65,7 @@ export class ScheduleController {
   async getScheduleCountByDayInMonth(
     @Param('date') date: string, @Query('lecturerId') lecturerId: string
   ): Promise<ScheduleCountByDayDto[]> {
+    //date '2024-09-01' 
     return this.scheduleService.getScheduleCountByDayInMonth(date, lecturerId);
   }
 

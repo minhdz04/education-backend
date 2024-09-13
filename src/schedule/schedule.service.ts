@@ -7,7 +7,7 @@ import { Between, Repository } from 'typeorm';
 import { Schedule } from '../entity/schedule.entity';
 import { ScheduleCountByDayDto } from './dto/schedule-count-by-day.dto';
 import { ScheduleStudentDto } from './dto/schedule-student.dto';
-
+import moment from 'moment';
 @Injectable()
 export class ScheduleService {
   constructor(
@@ -71,13 +71,17 @@ export class ScheduleService {
     date: string,
     lecturerId: string
   ): Promise<ScheduleCountByDayDto[]> {
-    const [year, month] = date.split('-').map(Number);
-    const currentMonth = String(month)?.padStart(2, '0')
-    const startDate = `${year}-${currentMonth}-01`
-    const getFullYear = new Date(startDate).getFullYear()
-    const getMonth = new Date(startDate).getMonth()
-    const lastDayInCurrentMonth = new Date(getFullYear, getMonth + 1, 0).getDate()
-    const endDate = `${year}-${currentMonth}-${lastDayInCurrentMonth}`
+    console.log(date)
+    const startDate = moment(date,"YYYY-MM-DD",true).startOf("month").format('YYYY-MM-DD')
+    const endDate = moment(date,"YYYY-MM-DD",true).endOf("month").format('YYYY-MM-DD')
+    // const [year, month] = date.split('-').map(Number);
+    // const currentMonth = String(month)?.padStart(2, '0')
+    // const startDate = `${year}-${currentMonth}-01`
+    // const getFullYear = new Date(startDate).getFullYear()
+    // const getMonth = new Date(startDate).getMonth()
+    // const lastDayInCurrentMonth = new Date(getFullYear, getMonth + 1, 0).getDate()
+    // const endDate = `${year}-${currentMonth}-${lastDayInCurrentMonth}`
+    console.log(startDate + " " + endDate);
     const schedules = await this.scheduleRepository.find({
       where: {
         date: Between(startDate, endDate),

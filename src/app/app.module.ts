@@ -27,13 +27,13 @@ import { AuthModule } from 'src/auth/auth.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: '103.229.42.113',
-        port: 3306,
+        host: '127.0.0.1',
+        port: 3308,
         username: 'root',
-        password: 'PASSWORD',
+        password: '12345678',
         database: 'attendence_system_v2',
         entities: ['dist/**/*.entity{.ts,.js}'],
-        //synchronize: true,
+        synchronize: true,
       }),
     }),
     //Thêm các module khác

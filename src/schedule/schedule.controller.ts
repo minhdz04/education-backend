@@ -27,13 +27,13 @@ export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
   @Post()
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   create(@Body() schedule: Schedule) {
     return this.scheduleService.create(schedule);
   }
 
   @Get()
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   findAll() {
     return this.scheduleService.findAll();
   }
@@ -49,13 +49,13 @@ export class ScheduleController {
   }
 
   @Patch(':id')
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   update(@Param('id') id: string, @Body() schedule: Schedule) {
     return this.scheduleService.update(+id, schedule);
   }
 
   @Delete(':id')
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   remove(@Param('id') id: string) {
     return this.scheduleService.remove(+id);
   }
@@ -63,9 +63,10 @@ export class ScheduleController {
   @Public()
   @Get('count-by-day/:date')
   async getScheduleCountByDayInMonth(
-    @Param('date') date: string, @Query('lecturerId') lecturerId: string
+    @Param('date') date: string, @Query('lecturerId') lecturerId: number
   ): Promise<ScheduleCountByDayDto[]> {
     //date '2024-09-01' 
+    console.log(`${lecturerId}`)
     return this.scheduleService.getScheduleCountByDayInMonth(date, lecturerId);
   }
 

@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Role } from 'src/auth/role.enum';
-import { Roles } from 'src/auth/roles.decorator';
 import { CreateUserDto } from './dto/create.dto';
 import { UpdateDto } from './dto/update.dto';
 import { UserService } from './user.service';

@@ -30,4 +30,8 @@ export class ClassroomService {
   async remove(id: number): Promise<void> {
     await this.classroomRepository.delete(id);
   }
+
+  // async getClassroomsByBuildingId(buildingId: number): Promise<Classroom[]> {
+  //   return this.classroomRepository.getClassroomsByBuildingId(buildingId);
+  // }
 }
